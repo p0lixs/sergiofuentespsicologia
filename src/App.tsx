@@ -283,7 +283,7 @@ function App() {
           </div>
           <div className="footer-contact">
             <a href="mailto:hola@sergiofuentespsicologia.com">hola@sergiofuentespsicologia.com</a>
-            <a href="https://instagram.com/sergio.psicologia">@sergio.psicologia</a>
+            <a href="https://instagram.com/sergio.psicologia">@sergiofuentespsicologia</a>
             <span>© 2026. Todos los derechos reservados.</span>
           </div>
         </div>
