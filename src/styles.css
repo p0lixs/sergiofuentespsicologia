@@ -239,6 +239,13 @@ p { color: var(--muted); line-height: 1.65; }
   backdrop-filter: blur(12px);
 }
 .contact-form label { display: grid; gap: 7px; margin-bottom: 15px; color: var(--ink); font-size: 11px; font-weight: 600; }
+.contact-form .honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 .contact-form input, .contact-form textarea {
   width: 100%;
@@ -255,6 +262,8 @@ p { color: var(--muted); line-height: 1.65; }
 .contact-form .privacy { display: flex; grid-template-columns: auto 1fr; align-items: center; gap: 8px; font-weight: 400; }
 .privacy input { width: 14px; }
 .submit-button { width: 100%; }
+.submit-button:disabled { cursor: wait; opacity: .72; transform: none; }
+.form-error { margin: -2px 0 13px; color: #9c3650; font-size: 12px; text-align: center; }
 .success-message { min-height: 446px; display: grid; place-content: center; justify-items: center; text-align: center; }
 .success-message span { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 50%; color: white; background: #a47aea; }
 

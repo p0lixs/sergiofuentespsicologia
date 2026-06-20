@@ -50,11 +50,42 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(0);
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const closeMenu = () => setMenuOpen(false);
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSent(true);
+    setSending(true);
+    setFormError("");
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(data.entries())),
+      });
+
+      const result = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "No se ha podido enviar la solicitud.");
+      }
+
+      form.reset();
+      setSent(true);
+    } catch (error) {
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "No se ha podido enviar la solicitud.",
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -234,19 +265,24 @@ function App() {
               </div>
             ) : (
               <form className="contact-form" onSubmit={submit}>
+                <label className="honeypot" aria-hidden="true">
+                  Web
+                  <input name="website" tabIndex={-1} autoComplete="off" />
+                </label>
                 <div className="form-row">
                   <label>Nombre*<input name="name" placeholder="María" required /></label>
                   <label>Apellidos*<input name="surname" placeholder="Gómez" required /></label>
                 </div>
                 <label>Email*<input name="email" type="email" placeholder="correo@hola.com" required /></label>
                 <label>Teléfono de contacto*<input name="phone" type="tel" placeholder="+34" required /></label>
-                <label>¿Cómo te ayudo?<textarea name="message" placeholder="Explica brevemente tu situación..." rows={4} /></label>
+                <label>¿Cómo te ayudo?*<textarea name="message" placeholder="Explica brevemente tu situación..." rows={4} required /></label>
                 <label className="privacy">
                   <input type="checkbox" required />
                   <span>Acepto la política de privacidad.</span>
                 </label>
-                <button className="button button-primary submit-button" type="submit">
-                  Reservar <Send size={15} />
+                {formError && <p className="form-error" role="alert">{formError}</p>}
+                <button className="button button-primary submit-button" type="submit" disabled={sending}>
+                  {sending ? "Enviando..." : "Reservar"} <Send size={15} />
                 </button>
               </form>
             )}
@@ -283,7 +319,7 @@ function App() {
           </div>
           <div className="footer-contact">
             <a href="mailto:hola@sergiofuentespsicologia.com">hola@sergiofuentespsicologia.com</a>
-            <a href="https://instagram.com/sergio.psicologia">@sergiofuentespsicologia</a>
+            <a href="https://instagram.com/sergiofuentespsicologia">@sergiofuentespsicologia</a>
             <span>© 2026. Todos los derechos reservados.</span>
           </div>
         </div>
